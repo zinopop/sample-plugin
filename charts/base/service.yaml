@@ -1,0 +1,13 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.plugin }}
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: 80
+      targetPort: 8100
+  selector:
+    control-plane: {{ .Values.plugin }}
+    service-name: {{ .Values.plugin }}

@@ -1,0 +1,32 @@
+plugin: sample-plugin
+# replicas: number of replicas for stateless components
+replicas: 1
+# logLevel: a basic log level parameter
+logLevel: debug
+# deployment namespace
+namespace: cpaas-system
+registry:
+  # address: registry address
+  address: build-harbor.alauda.cn
+  imagePullSecrets: [ ]
+webhook:
+  address: ""
+# deploy with ko
+ko:
+  enable: false
+  # image: see https://github.com/google/ko
+  image: "ko://gomod.alauda.cn/katanomi-plugin-sample/cmd/sample-plugin"
+# all the images and components used
+images:
+  plugin:
+    # repository: image repository for the image
+    repository: registry.cn-beijing.aliyuncs.com/alauda-yuzheng/katanomi-plugin-sample-plugin
+    # tag: a tag for the component
+    tag: "latest"
+resources:
+  requests:
+    memory: 50Mi
+    cpu: 50m
+  limits:
+    memory: 512Mi
+    cpu: 500m

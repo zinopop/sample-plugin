@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.plugin }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    control-plane: {{ .Values.plugin }}
+spec:
+  selector:
+    matchLabels:
+      control-plane: {{ .Values.plugin }}
+      service-name: {{ .Values.plugin }}
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        control-plane: {{ .Values.plugin }}
+        service-name: {{ .Values.plugin }}
+        version-hash: sha1-{{ .Chart.Version | sha1sum }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - image: {{ template "plugin.image" . }}
+        imagePullPolicy: {{ template "plugin.imagePolicy" . }}
+        name: sample-plugin
+        args:
+        - "--config=/controller_manager_config.yaml"
+        volumeMounts:
+        - name: manager-config
+          mountPath: /controller_manager_config.yaml
+          subPath: controller_manager_config.yaml
+        securityContext:
+          allowPrivilegeEscalation: false
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CONFIG_LOGGING_NAME
+          value: {{ .Values.plugin }}-config-logging
+        - name: SERVICE_NAME
+          value: {{ .Values.plugin }}
+        - name: WEBHOOK_ADDRESS
+          value: {{ .Values.webhook.address }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8100
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8100
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ .Values.plugin }}
+      volumes:
+      - name: manager-config
+        configMap:
+          name: {{ .Values.plugin }}-config
+{{ include "plugin.tolerations" . | indent 6 }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                control-plane: {{ .Values.plugin }}
+                version-hash: sha1-{{ .Chart.Version | sha1sum }}
+            topologyKey: kubernetes.io/hostname

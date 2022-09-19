@@ -1,0 +1,167 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: plugin-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - gittriggers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - gittriggers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - integrationclasses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - integrationclasses/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - integrationclasses/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - triggers
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - triggers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - triggers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - webhooks
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - webhooks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - core.katanomi.dev
+  resources:
+  - webhooks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - eventing.knative.dev
+  resources:
+  - brokers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - messaging.knative.dev
+  resources:
+  - subscriptions
+  verbs:
+  - get
+  - list
+  - watch
